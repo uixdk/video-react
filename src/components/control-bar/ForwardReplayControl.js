@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import classNames from 'classnames';
 
 const propTypes = {
   actions: PropTypes.object,
@@ -14,7 +13,6 @@ const defaultProps = {
 
 export default (mode) => {
   class ForwardReplayControl extends Component {
-
     constructor(props, context) {
       super(props, context);
       this.handleClick = this.handleClick.bind(this);
@@ -32,6 +30,11 @@ export default (mode) => {
 
     render() {
       const { seconds, className } = this.props;
+      const classNames = ['video-react-control', 'video-react-button', 'video-react-icon'];
+      classNames.push(`video-react-icon-${mode}-${seconds}`, `video-react-${mode}-control`);
+      if (className) {
+        classNames.push(className);
+      }
       return (
         <button
           ref={
@@ -39,10 +42,8 @@ export default (mode) => {
               this.button = c;
             }
           }
-          className={classNames(className, {
-            [`video-react-icon-${mode}-${seconds}`]: true,
-            [`video-react-${mode}-control`]: true,
-          }, 'video-react-control video-react-button video-react-icon')}
+          className={classNames.join(' ')}
+          type="button"
           onClick={this.handleClick}
         >
           <span className="video-react-control-text">{`${mode} ${seconds} seconds`}</span>
@@ -55,4 +56,3 @@ export default (mode) => {
   ForwardReplayControl.defaultProps = defaultProps;
   return ForwardReplayControl;
 };
-

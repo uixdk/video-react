@@ -2,18 +2,13 @@ import React from 'react';
 import { Link } from 'react-router';
 import { Container, Row, Col, Nav, NavItem, NavLink } from 'reactstrap';
 
-const CustomizeLink = (props) => {
-  return (
+const CustomizeLink = (props) => (
     <NavItem>
       <NavLink tag={Link} to={props.item.to} activeClassName="active">
         {props.item.name}
       </NavLink>
     </NavItem>
   );
-};
-const propTypes = {
-  children: React.PropTypes.node
-};
 
 class Customize extends React.Component {
   constructor(props) {
@@ -23,13 +18,17 @@ class Customize extends React.Component {
       navItems: [
         {
           name: 'Enable Disable Component',
-          to: '/customize/enable-disable-components/'
+          to: '/customize/enable-disable-components/',
+        },
+        {
+          name: 'Customize Component',
+          to: '/customize/customize-component/',
         },
         {
           name: 'Customize Video Source',
-          to: '/customize/customize-source/'
-        }
-      ]
+          to: '/customize/customize-source/',
+        },
+      ],
     };
   }
   render() {
@@ -40,9 +39,7 @@ class Customize extends React.Component {
             <div className="docs-sidebar mb-3">
               <h5>Customize</h5>
               <Nav className="flex-column">
-                {this.state.navItems.map((item, i) => {
-                  return <CustomizeLink key={i} item={item} />;
-                })}
+                {this.state.navItems.map((item, i) => <CustomizeLink key={i} item={item} />)}
               </Nav>
             </div>
           </Col>
@@ -55,5 +52,4 @@ class Customize extends React.Component {
   }
 }
 
-Customize.propTypes = propTypes;
 export default Customize;

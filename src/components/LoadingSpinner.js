@@ -8,13 +8,9 @@ const propTypes = {
 };
 
 export default function LoadingSpinner({ player, className }) {
-  if (
-    !player.hasStarted ||
-    (!player.seeking && !player.waiting)
-  ) {
+  if (player.error) {
     return null;
   }
-
   return (
     <div
       className={classNames(
@@ -26,3 +22,4 @@ export default function LoadingSpinner({ player, className }) {
 }
 
 LoadingSpinner.propTypes = propTypes;
+LoadingSpinner.displayName = 'LoadingSpinner';

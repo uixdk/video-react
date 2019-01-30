@@ -1,8 +1,9 @@
 
 # video-react
 [![npm version](https://badge.fury.io/js/video-react.svg)](https://badge.fury.io/js/video-react) [![Build Status](https://travis-ci.org/video-react/video-react.svg?branch=master)](https://travis-ci.org/video-react/video-react) [![Package Quality](http://npm.packagequality.com/shield/video-react.svg)](http://packagequality.com/#?package=video-react)
+[![codecov](https://codecov.io/gh/video-react/video-react/branch/master/graph/badge.svg)](https://codecov.io/gh/video-react/video-react)
 
-Video.React is a web video player built from the ground up for an HTML5 world using React library. 
+Video.React is a web video player built from the ground up for an HTML5 world using React library.
 
 
 ## Installation
@@ -10,12 +11,12 @@ Video.React is a web video player built from the ground up for an HTML5 world us
 Install `video-react` and __peer dependencies__ via NPM
 
 ```sh
-npm install --save video-react react react-dom redux
+npm install --save video-react react react-dom
 ```
 
 import css in your app or add video-react styles in your page
 ```jsx
-import "node_modules/video-react/dist/video-react.css"; // import css
+import "~video-react/dist/video-react.css"; // import css
 ```
 or
 ```scss
@@ -43,27 +44,36 @@ export default (props) => {
 
 ## Development
 
-Install dependencies:
-
-```sh
-npm install
-```
-
-Run examples at [http://localhost:9000/](http://localhost:9000/) with webpack dev server:
-
-```sh
-npm start
-```
-
-Run tests & coverage report:
+Run tests:
 
 ```sh
 npm test
 ```
 
-```sh
-npm run report-coverage
+
+### run from local
+
+```bash
+$ npm install
+$ npm start
 ```
+
+## Releasing
+
+### Create Release Branch
+
+To create a release branch and changelog, run the following command, optionally with a semantic release type (major, minor, patch) (if not provided, it will default to semver (it's best to let it default)):
+
+```
+./scripts/release <release-type>
+```
+
+Verify changelog in branch. Create a PR if everything looks good. Merge when tests are green.
+
+### Tagging and Publishing
+Once the release branch is merged, checkout master and run:
+
+./scripts/publish
 
 ## Inspiration & Credits
 

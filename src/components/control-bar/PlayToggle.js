@@ -9,7 +9,6 @@ const propTypes = {
 };
 
 export default class PlayToggle extends Component {
-
   constructor(props, context) {
     super(props, context);
     this.handleClick = this.handleClick.bind(this);
@@ -42,6 +41,7 @@ export default class PlayToggle extends Component {
           'video-react-paused': player.paused,
           'video-react-playing': !player.paused,
         })}
+        type="button"
         tabIndex="0"
         onClick={this.handleClick}
       >
@@ -54,3 +54,4 @@ export default class PlayToggle extends Component {
 }
 
 PlayToggle.propTypes = propTypes;
+PlayToggle.displayName = 'PlayToggle';

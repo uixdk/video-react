@@ -108,14 +108,12 @@ export function handleTimeUpdate(videoProps) {
   };
 }
 
-
 export function handleVolumeChange(videoProps) {
   return {
     type: VOLUME_CHANGE,
     videoProps
   };
 }
-
 
 export function handleProgressChange(videoProps) {
   return {
@@ -124,14 +122,12 @@ export function handleProgressChange(videoProps) {
   };
 }
 
-
 export function handleRateChange(videoProps) {
   return {
     type: RATE_CHANGE,
     videoProps,
   };
 }
-
 
 export function handleSuspend(videoProps) {
   return {

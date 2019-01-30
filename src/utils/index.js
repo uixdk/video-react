@@ -1,5 +1,9 @@
 import React from 'react';
 
+// NaN is the only value in javascript which is not equal to itself.
+// eslint-disable-next-line no-self-compare
+const isNaN = Number.isNaN || (value => value !== value);
+
 /**
  * @file format-time.js
  *
@@ -24,7 +28,9 @@ export function formatTime(seconds = 0, guide = seconds) {
   if (isNaN(seconds) || seconds === Infinity) {
     // '-' is false for all relational operators (e.g. <, >=) so this setting
     // will add the minimum number of fields specified by the guide
-    h = m = s = '-';
+    h = '-';
+    m = '-';
+    s = '-';
   }
 
   // Check if we need to show hours
@@ -51,24 +57,40 @@ export function isVideoChild(c) {
   return (c.type === 'source' || c.type === 'track');
 }
 
+const find = (elements, func) => elements.filter(func)[0];
+
+// check if two components are the same type
+const isTypeEqual = (component1, component2) => {
+  const type1 = component1.type;
+  const type2 = component2.type;
+
+  if (typeof type1 === 'string' || typeof type2 === 'string') {
+    return type1 === type2;
+  }
+
+  if (typeof type1 === 'function' && typeof type2 === 'function') {
+    return type1.displayName === type2.displayName;
+  }
+
+  return false;
+};
+
 // merge default children
 // sort them by `order` property
 // filter them by `disabled` property
 export function mergeAndSortChildren(defaultChildren, _children, _parentProps, defaultOrder = 1) {
   const children = React.Children.toArray(_children);
-  const parentProps = { ..._parentProps };
+  const { order, ...parentProps } = _parentProps; // ignore order from parent
   return children
-    .filter((e) => !e.props.disabled)
+    .filter(e => !e.props.disabled) // filter the disabled components
     .concat(
       defaultChildren.filter(
-        (c) => !children.find((component) =>
-          component.type === c.type
-        )
+        c => !find(children, component => isTypeEqual(component, c))
       )
     )
     .map((element) => {
-      const defaultComponent = defaultChildren.find((c) => c.type === element.type);
-      delete parentProps.order;
+      const defaultComponent = find(defaultChildren, c => isTypeEqual(c, element));
+
       const defaultProps = defaultComponent ? defaultComponent.props : {};
       const props = {
         ...parentProps, // inherit from parent component
@@ -91,6 +113,20 @@ export function mergeAndSortChildren(defaultChildren, _children, _parentProps, d
 export function deprecatedWarning(oldMethodCall, newMethodCall) {
   // eslint-disable-next-line no-console
   console.warn(`WARNING: ${oldMethodCall} will be deprecated soon! Please use ${newMethodCall} instead.`);
+}
+
+export function throttle(callback, limit) {
+  let wait = false;
+  return () => {
+    if (!wait) {
+      // eslint-disable-next-line prefer-rest-params
+      callback(...arguments);
+      wait = true;
+      setTimeout(() => {
+        wait = false;
+      }, limit);
+    }
+  };
 }
 
 export const mediaProperties = [

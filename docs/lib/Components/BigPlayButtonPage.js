@@ -4,7 +4,7 @@ import { PrismCode } from 'react-prism';
 import { Button } from 'reactstrap';
 import Helmet from 'react-helmet';
 import BigPlayButtonExample from '../examples/BigPlayButton';
-const BigPlayButtonExampleSource = require('!!raw!../examples/BigPlayButton');
+const BigPlayButtonExampleSource = require('!!raw-loader!../examples/BigPlayButton');
 
 export default class BigPlayButtonPage extends React.Component {
   render() {
@@ -23,6 +23,12 @@ export default class BigPlayButtonPage extends React.Component {
             {BigPlayButtonExampleSource}
           </PrismCode>
         </pre>
+        <form>
+          <div className="form-group">
+            <label htmlFor="exampleTextarea">Example textarea</label>
+            <textarea className="form-control" id="exampleTextarea" rows="3" />
+          </div>
+        </form>
         <h4>Properties</h4>
         <pre>
           <PrismCode className="language-jsx">

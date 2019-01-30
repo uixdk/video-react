@@ -8,9 +8,9 @@ export default (props) => {
       poster="/assets/poster.png"
       src="https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
     >
-      <ControlBar autoHide={false} disableDefaultControls={true}>
+      <ControlBar autoHide={false} disableDefaultControls>
         <VolumeMenuButton />
-        <VolumeMenuButton vertical={true} />
+        <VolumeMenuButton vertical />
       </ControlBar>
     </Player>
   );

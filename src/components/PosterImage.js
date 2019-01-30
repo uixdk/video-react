@@ -9,7 +9,9 @@ const propTypes = {
   className: PropTypes.string,
 };
 
-function PosterImage({ poster, player, actions, className }) {
+function PosterImage({
+  poster, player, actions, className
+}) {
   if (!poster || player.hasStarted) {
     return null;
   }
@@ -33,5 +35,6 @@ function PosterImage({ poster, player, actions, className }) {
 }
 
 PosterImage.propTypes = propTypes;
+PosterImage.displayName = 'PosterImage';
 
 export default PosterImage;

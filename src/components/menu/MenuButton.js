@@ -15,7 +15,6 @@ const propTypes = {
 };
 
 export default class MenuButton extends Component {
-
   constructor(props, context) {
     super(props, context);
 
@@ -40,8 +39,11 @@ export default class MenuButton extends Component {
     this.handleIndexChange = this.handleIndexChange.bind(this);
   }
 
-  // componentDidUpdate(prevProps) {
-  // }
+  componentDidUpdate(prevProps) {
+    if (prevProps.selectedIndex !== this.props.selectedIndex) {
+      this.activateMenuItem(this.props.selectedIndex);
+    }
+  }
 
   commitSelection(index) {
     this.setState({
@@ -64,9 +66,9 @@ export default class MenuButton extends Component {
   }
 
   handleClick() {
-    this.setState({
-      active: !this.state.active,
-    });
+    this.setState(prevState => ({
+      active: !prevState.active,
+    }));
   }
 
   handleFocus() {
@@ -179,7 +181,7 @@ export default class MenuButton extends Component {
           'video-react-menu-button-popup': !inline,
           'video-react-menu-button-active': this.state.active,
         }, 'video-react-control video-react-button video-react-menu-button')}
-        role="presentation"
+        role="button"
         tabIndex="0"
         ref={(c) => {
           this.menuButton = c;
@@ -196,4 +198,4 @@ export default class MenuButton extends Component {
 }
 
 MenuButton.propTypes = propTypes;
-
+MenuButton.displayName = 'MenuButton';

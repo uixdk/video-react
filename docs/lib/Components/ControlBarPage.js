@@ -4,7 +4,8 @@ import { PrismCode } from 'react-prism';
 import { Button } from 'reactstrap';
 import Helmet from 'react-helmet';
 import ControlBarExample from '../examples/ControlBar';
-const ControlBarExampleSource = require('!!raw!../examples/ControlBar');
+
+const ControlBarExampleSource = require('!!raw-loader!../examples/ControlBar');
 
 export default class ControlBarPage extends React.Component {
   render() {
@@ -26,11 +27,14 @@ export default class ControlBarPage extends React.Component {
         <h4>Properties</h4>
         <pre>
           <PrismCode className="language-jsx">
-{`ControlBar.propTypes = {
+            {`ControlBar.propTypes = {
 
   // Hide the control bar automatically after the player is inactive
   // default: 'true'
   autoHide: PropTypes.bool,
+  // Do not render the control bar if set it to true
+  // default: 'false'
+  disableCompletely: PropTypes.bool,
 
 }`}
           </PrismCode>

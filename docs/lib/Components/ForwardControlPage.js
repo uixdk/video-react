@@ -4,7 +4,8 @@ import { PrismCode } from 'react-prism';
 import { Button } from 'reactstrap';
 import Helmet from 'react-helmet';
 import ForwardControlExample from '../examples/ForwardControl';
-const ForwardControlExampleSource = require('!!raw!../examples/ForwardControl');
+
+const ForwardControlExampleSource = require('!!raw-loader!../examples/ForwardControl');
 
 export default class ForwardControlPage extends React.Component {
   render() {
@@ -26,11 +27,11 @@ export default class ForwardControlPage extends React.Component {
         <h4>Properties</h4>
         <pre>
           <PrismCode className="language-jsx">
-{`ForwardControl.propTypes = {
+                        {`ForwardControl.propTypes = {
 
   // How many seconds to go forward
   // default: 10
-  seconds: React.PropTypes.oneOf([5, 10, 30]),
+  seconds: PropTypes.oneOf([5, 10, 30]),
 
 }`}
           </PrismCode>

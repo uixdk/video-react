@@ -1,9 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import throttle from 'lodash.throttle';
 import classNames from 'classnames';
 
-import { isVideoChild, mediaProperties } from '../utils';
+import { isVideoChild, mediaProperties, throttle } from '../utils';
 
 const propTypes = {
   actions: PropTypes.object,
@@ -18,6 +17,7 @@ const propTypes = {
   poster: PropTypes.string,
   className: PropTypes.string,
   preload: PropTypes.oneOf(['auto', 'metadata', 'none']),
+  crossOrigin: PropTypes.string,
 
   onLoadStart: PropTypes.func,
   onWaiting: PropTypes.func,
@@ -148,12 +148,22 @@ export default class Video extends Component {
 
   // play the video
   play() {
-    this.video.play();
+    const promise = this.video.play();
+    if (promise !== undefined) {
+      promise
+        .catch(() => {})
+        .then(() => {});
+    }
   }
 
   // pause the video
   pause() {
-    this.video.pause();
+    const promise = this.video.pause();
+    if (promise !== undefined) {
+      promise
+        .catch(() => {})
+        .then(() => {});
+    }
   }
 
   // Change the video source and re-load the video:
@@ -296,7 +306,9 @@ export default class Video extends Component {
   // Fired when the end of the media resource
   // is reached (currentTime == duration)
   handleEnded(...args) {
-    const { loop, player, actions, onEnded } = this.props;
+    const {
+      loop, player, actions, onEnded
+    } = this.props;
     if (loop) {
       this.seek(0);
       this.play();
@@ -509,7 +521,7 @@ export default class Video extends Component {
   render() {
     const {
       loop, poster, preload, src, autoPlay,
-      playsInline, muted
+      playsInline, muted, crossOrigin, videoId
     } = this.props;
 
     return (
@@ -518,6 +530,8 @@ export default class Video extends Component {
           'video-react-video',
           this.props.className
         )}
+        id={videoId}
+        crossOrigin={crossOrigin}
         ref={(c) => { this.video = c; }}
         muted={muted}
         preload={preload}
@@ -557,3 +571,4 @@ export default class Video extends Component {
 
 Video.propTypes = propTypes;
 Video.defaultProps = defaultProps;
+Video.displayName = 'Video';

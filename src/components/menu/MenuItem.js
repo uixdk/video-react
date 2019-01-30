@@ -10,7 +10,6 @@ const propTypes = {
 };
 
 export default class MenuItem extends Component {
-
   constructor(props, context) {
     super(props, context);
 
@@ -30,6 +29,7 @@ export default class MenuItem extends Component {
           'video-react-menu-item': true,
           'video-react-selected': index === activateIndex,
         })}
+        role="menuitem"
         onClick={this.handleClick}
       >
         {item.label}
@@ -40,3 +40,4 @@ export default class MenuItem extends Component {
 }
 
 MenuItem.propTypes = propTypes;
+MenuItem.displayName = 'MenuItem';

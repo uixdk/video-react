@@ -12,7 +12,6 @@ const propTypes = {
 };
 
 export default class ProgressControl extends Component {
-
   constructor(props, context) {
     super(props, context);
 
@@ -65,3 +64,4 @@ export default class ProgressControl extends Component {
 }
 
 ProgressControl.propTypes = propTypes;
+ProgressControl.displayName = 'ProgressControl';

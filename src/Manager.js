@@ -1,12 +1,12 @@
-import createStore from 'redux/lib/createStore';
+import { createStore } from 'redux';
 import reducer from './reducers';
 import * as playerActions from './actions/player';
 import * as videoActions from './actions/video';
 
 
 export default class Manager {
-  constructor() {
-    this.store = createStore(reducer);
+  constructor(store) {
+    this.store = store || createStore(reducer);
 
     this.video = null;
     this.rootElement = null;
@@ -21,7 +21,7 @@ export default class Manager {
     };
 
     function bindActionCreator(actionCreator) {
-      return function () {
+      return function bindAction() {
         // eslint-disable-next-line prefer-rest-params
         const action = actionCreator.apply(manager, arguments);
         if (typeof action !== 'undefined') {
@@ -31,7 +31,7 @@ export default class Manager {
     }
 
     return Object.keys(actions).filter(
-      key => typeof actions[key] === 'function'
+      key => typeof actions[key] === 'function',
     ).reduce((boundActions, key) => {
       boundActions[key] = bindActionCreator(actions[key]);
       return boundActions;
@@ -72,6 +72,4 @@ export default class Manager {
   subscribeToPlayerStateChange(listener) {
     return this.subscribeToStateChange(listener, () => this.getState().player);
   }
-
 }
-

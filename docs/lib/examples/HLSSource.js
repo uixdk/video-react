@@ -1,11 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 import Hls from 'hls.js';
-
-const propTypes = {
-  src: PropTypes.string.isRequired,
-  type: PropTypes.string,
-  video: PropTypes.object,
-};
 
 export default class HLSSource extends Component {
   constructor(props, context) {
@@ -28,6 +22,14 @@ export default class HLSSource extends Component {
     }
   }
 
+
+  componentWillUnmount() {
+    // destroy hls video source
+    if (this.hls) {
+      this.hls.destroy();
+    }
+  }
+
   render() {
     return (
       <source
@@ -36,7 +38,4 @@ export default class HLSSource extends Component {
       />
     );
   }
-
 }
-
-HLSSource.propTypes = propTypes;

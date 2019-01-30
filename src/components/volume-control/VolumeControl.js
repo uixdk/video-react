@@ -8,14 +8,15 @@ const propTypes = {
   className: PropTypes.string,
 };
 
-export default function VolumeControl({ className }) {
+export default function VolumeControl({ className, ...rest }) {
   return (
     <div
       className={classNames(className, 'video-react-volume-control video-react-control')}
     >
-      <VolumeBar {...this.props} />
+      <VolumeBar {...rest} />
     </div>
   );
 }
 
 VolumeControl.propTypes = propTypes;
+VolumeControl.displayName = 'VolumeControl';

@@ -115,8 +115,8 @@ class VolumeBar extends Component {
         onPercentageChange={this.handlePercentageChange}
         stepForward={this.stepForward}
         stepBack={this.stepBack}
-        className={classNames(className, 'video-react-volume-bar video-react-slider-bar')}
         {...this.props}
+        className={classNames(className, 'video-react-volume-bar video-react-slider-bar')}
       >
         <VolumeLevel
           {...this.props}
@@ -127,5 +127,6 @@ class VolumeBar extends Component {
 }
 
 VolumeBar.propTypes = propTypes;
+VolumeBar.displayName = 'VolumeBar';
 
 export default VolumeBar;

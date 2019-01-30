@@ -9,13 +9,16 @@ describe('Slider', () => {
         actions={{}}
         player={{}}
       />
-      );
+    );
     expect(wrapper.type()).toBe('div');
   });
 
   it('simulates click events', () => {
-    const e = jasmine.createSpyObj('e', ['preventDefault', 'stopPropagation']);
-    const onClick = jasmine.createSpy('onClick');
+    const e = {
+      preventDefault: jest.fn(),
+      stopPropagation: jest.fn()
+    };
+    const onClick = jest.fn();
     const wrapper = shallow(
       <Slider
         actions={{}}
@@ -25,7 +28,6 @@ describe('Slider', () => {
     );
 
     wrapper.find('div').simulate('click', e);
-    // wrapper.instance().onClick(e);
     expect(e.preventDefault).toHaveBeenCalled();
   });
 

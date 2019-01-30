@@ -16,7 +16,6 @@ const propTypes = {
 };
 
 export default class SeekBar extends Component {
-
   constructor(props, context) {
     super(props, context);
 
@@ -59,9 +58,6 @@ export default class SeekBar extends Component {
   }
 
   handleMouseDown() {
-    const { actions, player } = this.props;
-    this.videoWasPlaying = !player.paused;
-    actions.pause();
   }
 
   handleMouseUp(event) {
@@ -69,9 +65,6 @@ export default class SeekBar extends Component {
     const newTime = this.getNewTime(event);
     // Set new time (tell video to seek to new time)
     actions.seek(newTime);
-    if (this.videoWasPlaying) {
-      actions.play();
-    }
     actions.handleEndSeeking(newTime);
   }
 
@@ -93,7 +86,11 @@ export default class SeekBar extends Component {
   }
 
   render() {
-    const { player: { currentTime, seekingTime, duration, buffered }, mouseTime } = this.props;
+    const {
+      player: {
+        currentTime, seekingTime, duration, buffered
+      }, mouseTime
+    } = this.props;
     const time = seekingTime || currentTime;
 
     return (
@@ -131,3 +128,4 @@ export default class SeekBar extends Component {
 }
 
 SeekBar.propTypes = propTypes;
+SeekBar.displayName = 'SeekBar';

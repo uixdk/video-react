@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import throttle from 'lodash.throttle';
 
 import Manager from '../Manager';
 
@@ -14,19 +13,26 @@ import Shortcut from './Shortcut';
 import ControlBar from './control-bar/ControlBar';
 
 import * as browser from '../utils/browser';
-import { mergeAndSortChildren, isVideoChild } from '../utils';
+import { mergeAndSortChildren, isVideoChild, throttle } from '../utils';
 import fullscreen from '../utils/fullscreen';
 
 const propTypes = {
   children: PropTypes.any,
 
-  width: PropTypes.number,
-  height: PropTypes.number,
+  width: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+  height: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
   fluid: PropTypes.bool,
   muted: PropTypes.bool,
   playsInline: PropTypes.bool,
   aspectRatio: PropTypes.string,
   className: PropTypes.string,
+  videoId: PropTypes.string,
 
   startTime: PropTypes.number,
   loop: PropTypes.bool,
@@ -57,6 +63,8 @@ const propTypes = {
   onTimeUpdate: PropTypes.func,
   onRateChange: PropTypes.func,
   onVolumeChange: PropTypes.func,
+
+  store: PropTypes.object,
 };
 
 const defaultProps = {
@@ -74,7 +82,7 @@ export default class Player extends Component {
     this.controlsHideTimer = null;
 
     this.video = null; // the Video component
-    this.manager = new Manager();
+    this.manager = new Manager(props.store);
     this.actions = this.manager.getActions();
     this.manager.subscribeToPlayerStateChange(this.handleStateChange.bind(this));
 
@@ -99,14 +107,14 @@ export default class Player extends Component {
 
   componentWillUnmount() {
     // Remove event listener
-    window.addEventListener('resize', this.handleResize);
+    window.removeEventListener('resize', this.handleResize);
     fullscreen.removeEventListener(this.handleFullScreenChange);
     if (this.controlsHideTimer) {
       window.clearTimeout(this.controlsHideTimer);
     }
   }
 
-  getDefaultChildren(props, fullProps) {
+  getDefaultChildren(originalChildren) {
     return [
       <Video
         ref={(c) => {
@@ -115,54 +123,71 @@ export default class Player extends Component {
         }}
         key="video"
         order={0.0}
-        {...fullProps}
-      />,
+      >
+        {originalChildren}
+      </Video>,
       <PosterImage
         key="poster-image"
         order={1.0}
-        {...props}
       />,
       <LoadingSpinner
         key="loading-spinner"
         order={2.0}
-        {...props}
       />,
       <Bezel
         key="bezel"
         order={3.0}
-        {...props}
       />,
       <BigPlayButton
         key="big-play-button"
         order={4.0}
-        {...props}
       />,
       <ControlBar
         key="control-bar"
         order={5.0}
-        {...props}
       />,
       <Shortcut
         key="shortcut"
         order={99.0}
-        {...props}
-      />
+      />,
     ];
   }
 
   getChildren(props) {
-    const propsWithoutChildren = {
-      ...props,
-      children: null
-    };
+    const {
+      className: _, // remove className
+      children: originalChildren,
+      ...propsWithoutChildren
+    } = props;
     const children = React.Children.toArray(this.props.children)
       .filter(e => (!isVideoChild(e)));
-    const defaultChildren = this.getDefaultChildren(propsWithoutChildren, props);
+    const defaultChildren = this.getDefaultChildren(originalChildren);
     return mergeAndSortChildren(defaultChildren, children, propsWithoutChildren);
   }
 
+  setWidthOrHeight(style, name, value) {
+    let styleVal;
+    if (typeof value === 'string') {
+      if (value === 'auto') {
+        styleVal = 'auto';
+      } else if (value.match(/\d+%/)) {
+        styleVal = value;
+      }
+    } else if (typeof value === 'number') {
+      styleVal = `${value}px`;
+    }
+    Object.assign(style, {
+      [name]: styleVal,
+    });
+  }
+
   getStyle() {
-    const { fluid } = this.props;
+    const {
+      fluid,
+      aspectRatio: propsAspectRatio,
+      height: propsHeight,
+      width: propsWidth
+    } = this.props;
     const { player } = this.manager.getState();
     const style = {};
     let width;
@@ -170,10 +195,10 @@ export default class Player extends Component {
     let aspectRatio;
 
     // The aspect ratio is either used directly or to calculate width and height.
-    if (this.props.aspectRatio !== undefined
-      && this.props.aspectRatio !== 'auto') {
+    if (propsAspectRatio !== undefined
+      && propsAspectRatio !== 'auto') {
       // Use any aspectRatio that's been specifically set
-      aspectRatio = this.props.aspectRatio;
+      aspectRatio = propsAspectRatio;
     } else if (player.videoWidth) {
       // Otherwise try to get the aspect ratio from the video metadata
       aspectRatio = `${player.videoWidth}:${player.videoHeight}`;
@@ -186,20 +211,20 @@ export default class Player extends Component {
     const ratioParts = aspectRatio.split(':');
     const ratioMultiplier = ratioParts[1] / ratioParts[0];
 
-    if (this.props.width !== undefined) {
+    if (propsWidth !== undefined) {
       // Use any width that's been specifically set
-      width = this.props.width;
-    } else if (this.props.height !== undefined) {
+      width = propsWidth;
+    } else if (propsHeight !== undefined) {
       // Or calulate the width from the aspect ratio if a height has been set
-      width = this.props.height / ratioMultiplier;
+      width = propsHeight / ratioMultiplier;
     } else {
       // Or use the video's metadata, or use the video el's default of 300
       width = player.videoWidth || 400;
     }
 
-    if (this.props.height !== undefined) {
+    if (propsHeight !== undefined) {
       // Use any height that's been specifically set
-      height = this.props.height;
+      height = propsHeight;
     } else {
       // Otherwise calculate the height from the ratio and the width
       height = width * ratioMultiplier;
@@ -208,8 +233,9 @@ export default class Player extends Component {
     if (fluid) {
       style.paddingTop = `${ratioMultiplier * 100}%`;
     } else {
-      style.width = `${width}px`;
-      style.height = `${height}px`;
+      // If Width contains "auto", set "auto" in style
+      this.setWidthOrHeight(style, 'width', width);
+      this.setWidthOrHeight(style, 'height', height);
     }
 
     return style;
@@ -305,7 +331,7 @@ export default class Player extends Component {
 
   // subscribe to player state change
   subscribeToStateChange(listener) {
-    this.manager.subscribeToPlayerStateChange(listener);
+    return this.manager.subscribeToPlayerStateChange(listener);
   }
 
   // player resize
@@ -354,7 +380,10 @@ export default class Player extends Component {
   render() {
     const { fluid } = this.props;
     const { player } = this.manager.getState();
-    const { paused, hasStarted, waiting, seeking, isFullscreen, userActivity } = player;
+    const {
+      paused, hasStarted, waiting, seeking, isFullscreen, userActivity
+    } = player;
+
     const props = {
       ...this.props,
       player,
@@ -384,6 +413,7 @@ export default class Player extends Component {
         ref={(c) => {
           this.manager.rootElement = c;
         }}
+        role="region"
         onTouchStart={this.handleMouseDown}
         onMouseDown={this.handleMouseDown}
         onMouseMove={this.handleMouseMove}
@@ -398,5 +428,7 @@ export default class Player extends Component {
   }
 }
 
+Player.contextTypes = { store: PropTypes.object };
 Player.propTypes = propTypes;
 Player.defaultProps = defaultProps;
+Player.displayName = 'Player';

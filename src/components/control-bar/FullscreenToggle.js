@@ -10,7 +10,6 @@ const propTypes = {
 
 
 export default class FullscreenToggle extends Component {
-
   constructor(props, context) {
     super(props, context);
 
@@ -46,3 +45,4 @@ export default class FullscreenToggle extends Component {
 }
 
 FullscreenToggle.propTypes = propTypes;
+FullscreenToggle.displayName = 'FullscreenToggle';

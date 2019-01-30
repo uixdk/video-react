@@ -3,20 +3,18 @@ import { shallow } from 'enzyme';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 describe('LoadingSpinner', () => {
-  it('should render with "div" tag', () => {
+  it('should render null with error', () => {
     const wrapper = shallow(
       <LoadingSpinner
         player={{
-          hasStarted: false,
-          seeking: true,
-          waiting: true,
+          error: true,
         }}
       />
-      );
+    );
     expect(wrapper.type()).toBe(null);
   });
 
-  it('should render with "div" tag', () => {
+  it('should render "div" tag with seeking or waiting', () => {
     const wrapper = shallow(
       <LoadingSpinner
         player={{
@@ -25,7 +23,7 @@ describe('LoadingSpinner', () => {
           waiting: true,
         }}
       />
-      );
+    );
     expect(wrapper.type()).toBe('div');
   });
 
@@ -37,7 +35,8 @@ describe('LoadingSpinner', () => {
           seeking: true,
           waiting: true,
         }}
-      />);
+      />
+    );
     expect(wrapper.hasClass('video-react-loading-spinner')).toBe(true);
   });
 });

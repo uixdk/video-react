@@ -16,7 +16,7 @@ const initialState = {
   currentTime: 0,
   seekingTime: 0,
   buffered: null,
-  waiting: true,
+  waiting: false,
   seeking: false,
   paused: true,
   autoPaused: false,
@@ -34,7 +34,7 @@ const initialState = {
   isFullscreen: false,
 };
 
-export default function video(state = initialState, action) {
+export default function player(state = initialState, action) {
   switch (action.type) {
     case USER_ACTIVATE:
       return {
@@ -121,6 +121,13 @@ export default function video(state = initialState, action) {
         ...action.videoProps,
         seeking: false
       };
+    case ERROR:
+      return {
+        ...state,
+        ...action.videoProps,
+        error: 'UNKNOWN ERROR',
+        ended: true
+      };
     case DURATION_CHANGE:
     case TIME_UPDATE:
     case VOLUME_CHANGE:
@@ -133,10 +140,10 @@ export default function video(state = initialState, action) {
     case LOADED_META_DATA:
     case LOADED_DATA:
     case RESIZE:
-    case ERROR:
       return {
         ...state,
         ...action.videoProps,
+        ...(action.videoProps.paused === false ? { hasStarted: true, waiting: false } : {})
       };
     default:
       return state;

@@ -2,18 +2,13 @@ import React from 'react';
 import { Link } from 'react-router';
 import { Container, Row, Col, Nav, NavItem, NavLink } from 'reactstrap';
 
-const ComponentLink = (props) => {
-  return (
+const ComponentLink = (props) => (
     <NavItem>
       <NavLink tag={Link} to={props.item.to} activeClassName="active">
         {props.item.name}
       </NavLink>
     </NavItem>
   );
-};
-const propTypes = {
-  children: React.PropTypes.node
-};
 
 class Components extends React.Component {
   constructor(props) {
@@ -23,7 +18,7 @@ class Components extends React.Component {
       navItems: [
         {
           name: 'Player',
-          to: '/components/player/'
+          to: '/components/player/',
         },
         {
           name: 'Shortcut',
@@ -39,15 +34,15 @@ class Components extends React.Component {
         },
         {
           name: 'LoadingSpinner',
-          to: '/components/loading-spinner/'
+          to: '/components/loading-spinner/',
         },
         {
           name: 'ControlBar',
-          to: '/components/control-bar/'
+          to: '/components/control-bar/',
         },
         {
           name: 'PlayToggle',
-          to: '/components/play-toggle/'
+          to: '/components/play-toggle/',
         },
         {
           name: 'ReplayControl',
@@ -65,7 +60,7 @@ class Components extends React.Component {
           name: 'PlaybackRateMenuButton',
           to: '/components/playback-rate-menu-button/',
         },
-      ]
+      ],
     };
   }
   render() {
@@ -76,9 +71,7 @@ class Components extends React.Component {
             <div className="docs-sidebar mb-3">
               <h5>Components</h5>
               <Nav className="flex-column">
-                {this.state.navItems.map((item, i) => {
-                  return <ComponentLink key={i} item={item} />;
-                })}
+                {this.state.navItems.map((item, i) => <ComponentLink key={i} item={item} />)}
               </Nav>
             </div>
           </Col>
@@ -90,5 +83,5 @@ class Components extends React.Component {
     );
   }
 }
-Components.propTypes = propTypes;
+
 export default Components;

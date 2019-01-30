@@ -1,5 +1,3 @@
-// import '../styles/scss/video-react.scss';
-
 import Player from './components/Player';
 import Video from './components/Video';
 import BigPlayButton from './components/BigPlayButton';
@@ -27,6 +25,9 @@ import RemainingTimeDisplay from './components/time-controls/RemainingTimeDispla
 import CurrentTimeDisplay from './components/time-controls/CurrentTimeDisplay';
 import DurationDisplay from './components/time-controls/DurationDisplay';
 import TimeDivider from './components/time-controls/TimeDivider';
+import * as playerActions from './actions/player';
+import * as videoActions from './actions/video';
+import { playerReducer, operationReducer } from './reducers';
 
 export {
   Player,
@@ -53,5 +54,10 @@ export {
   TimeDivider,
   VolumeMenuButton,
   PlaybackRateMenuButton,
-  PlaybackRate
+  PlaybackRate,
+
+  playerActions,
+  videoActions,
+  playerReducer,
+  operationReducer,
 };
